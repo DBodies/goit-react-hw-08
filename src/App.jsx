@@ -1,55 +1,36 @@
-import { useState, useEffect } from 'react'
-import ContactList from './components/contactList'
-import SearchBox from './components/searchBox'
-import ContactForm from './components/contactForm'
-import styles from './components/stylesForAllComponents.module.css'
-import { useDispatch } from 'react-redux'
-import { returnContacts } from './redux/contactsSlice'
-import { useSelector } from 'react-redux'
-import { filterContact } from './redux/filtersSlice'
-import { fetchContacts } from './redux/contactsOps'
-import toast, { Toaster } from 'react-hot-toast'
-import { selectContacts, selectLoading,selectError } from './redux/contactsSlice'
+import { Suspense, useEffect} from "react"
+import { Routes, Route } from "react-router-dom"
+import Navigation from './components/navigation'
+import HomePage from "./pages/homePage"
+import LoginPage from "./pages/loginPage"
+import RegistrationPage from "./pages/registrationPage"
+import ContactsPage from "./pages/contactsPage"
+import AppBar from "./components/appBar"
+import { refreshUser } from "./redux/auth/operations"
+import { useDispatch } from "react-redux"
+import Layout from "./components/Layout"
+import styles from './components/componentsCss/app.module.css'
 
-
-export default function App() {
-  const dispatch = useDispatch()
-
-  const handleReset = () => {
-    dispatch(returnContacts())
-  }
-
-
+function App() {
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchContacts()).unwrap()
-      .then(() => {
-        toast.success("Loading page....")
-      })
-      .catch(() => {
-        toast.error("Page doesn`t working")
-      })
-  }, [dispatch])
+    dispatch(refreshUser())
+  },[dispatch])
 
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-  
-  
-  return (
-    <div className={styles.container}>
-      <h1>Phonebook</h1>
-      <Toaster/>
-      {error ? (
-        <strong>Oops, page doesn`t working</strong>
-      ) : (<ContactForm />
-          
-      )}
-          {loading && <strong>Loading list...</strong>}
-          <SearchBox/>
-            {!loading && <ContactList />}
-          <button onClick={handleReset}>return Contacts</button>
+
+  return (<div className={styles.mainContainer}>
+      <Layout>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/registration" element={<RegistrationPage />} />
+          <Route path="/contacts" element={<ContactsPage/>} />
+        </Routes>
+        </Suspense>
+        </Layout>
     </div>
   )
 }
 
-
- 
+export default App
