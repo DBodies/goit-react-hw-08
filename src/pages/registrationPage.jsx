@@ -6,7 +6,6 @@ export default function RegistrationPage() {
 
     return (
         <div>
-            <strong>Register your account</strong>
             <RegistrationForm/>
         </div>
     )
