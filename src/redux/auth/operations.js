@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+ import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 axios.defaults.baseURL = 'https://connections-api.goit.global/'
@@ -44,17 +44,26 @@ export const refreshUser = createAsyncThunk(
     async (_, thunkAPI) => {
         const state = thunkAPI.getState()
         const persistedToken = state.auth.token
-
-        if (persistedToken === null) {
-            return thunkAPI.rejectWithValue('Unable to fetch user')
-        }
-        try {
-            axios.defaults.headers.common.Authorization = persistedToken
-
-            const res = await axios.get('/users/current')
-            return res.data
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message)
+        axios.defaults.headers.common.Authorization = persistedToken
+        const res = await axios.get('/users/current')
+        return res.data
+    },
+    {
+        condition: (_, thunkAPI) => {
+            const state = thunkAPI.getState()
+            return state.auth.token !== null
         }
     }
 )
+
+// if (persistedToken === null) {
+//     return thunkAPI.rejectWithValue('Unable to fetch user')
+// }
+// try {
+//     axios.defaults.headers.common.Authorization = persistedToken
+
+//     const res = await axios.get('/users/current')
+//     return res.data
+// } catch (error) {
+//     return thunkAPI.rejectWithValue(error.message)
+// }

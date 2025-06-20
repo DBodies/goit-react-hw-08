@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { fetchContacts } from "../redux/contacts/operations"
 import ContactForm from "../components/contactForm"
 import SearchBox from "../components/searchBox"
+import styles from '../components/componentsCss/contacts.module.css'
 
 export default function ContactsPage() {
   const dispatch = useDispatch()
@@ -12,11 +13,10 @@ export default function ContactsPage() {
 },[dispatch])
 
     return (
-      <>
-        <h2>Contacts</h2>
+      <div className={styles.wrapper}>
         <SearchBox/>
         <ContactList />
         <ContactForm />
-      </>
+      </div>
     )
   }
